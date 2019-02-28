@@ -23,12 +23,15 @@ We decompose the design into four parts:\
  
  Descriptions of methodology about each part\
   1.Use MATLAB to design a GUI interface of phase vocoder\
-  2.\
-  3. First, we will use STFT to process signal. Then, we would try to use both OLA and PSOLA to recover\
-     STFT signal and compare its difference. In OLA, we would use Hamming window to recover STFT signal.\ 
-     In PSOLA, we would use Hanning window to recover STFT signal. We have completed OLA recovering.\
-  4.
-  
+  2.We will first compute where should we cut down the signal and then cut it down.\
+  3. For time stretching or time compressing, we SOLA and PSOLA to change the speed of the speech while\
+  retain the original pitch. If we have enough time, we will find some frequency domain processing methods\ 
+  and compare the result of these methods.\
+  4.For pitch shifting, we use a time domain processing method. First, we use SOLA algorithm to change the\
+  speed of the speech. Then we use resampling to change the speed and pitch of the speech at the same time.\
+  The speed up ratio is the same with the resampling ratio, so that the pitch will move while retain the\
+  original speed.
+   
  Division of project tasks\
   Part 1 and 2 will be completed by Shudi Chen\
   Part 3 is decomposed into two parts. Using OLA to recover signal will be completed by Qinwen Deng and\
