@@ -25,7 +25,7 @@ We decompose the design into four parts:\
   1.Use MATLAB to design a GUI interface of phase vocoder\
   2.We will first compute where should we cut down the signal and then cut it down.\
   3. For time stretching or time compressing, we SOLA and PSOLA to change the speed of the speech while\
-  retain the original pitch. If we have enough time, we will find some frequency domain processing method\ 
+  retain the original pitch. If we have enough time, we will find some frequency domain processing\ method 
   and compare the result of these methods.\
   4.For pitch shifting, we use a time domain processing method. First, we use SOLA algorithm to change the\
   speed of the speech. Then we use resampling to change the speed and pitch of the speech at the same time.\
