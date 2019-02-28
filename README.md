@@ -42,5 +42,5 @@ We decompose the design into four parts:\
  1. Eric Moulines, Francis Charpentier\
     Pitch-synchronous waveform processing techniques for text-to-speech synthesis using diphones\
     Speech Communication, Volume 9,Issues 5-6, Dec 1990, Page 453-467
- 2. TAMU lecturing slides-http://research.cs.tamu.edu/prism/lectures/sp/l19.pdf\
+ 2. TAMU lecturing slides-http://research.cs.tamu.edu/prism/lectures/sp/l19.pdf
  3. GUI learning video (Chinese)- www.bilibili.com/video/av14841464
