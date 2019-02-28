@@ -38,7 +38,7 @@ We decompose the design into four parts:\
   Zhichao Qiu. Using PSOLA to recover signal will be completed by Zhichao Qiu.\
   Part 4 will be completed by Qinwen Deng.
   
-  Milestone
+  Milestone\
   Complete the design and make a good presentation on the class.
  
  Reference
@@ -47,3 +47,7 @@ We decompose the design into four parts:\
     Speech Communication, Volume 9,Issues 5-6, Dec 1990, Page 453-467
  2. TAMU lecturing slides-http://research.cs.tamu.edu/prism/lectures/sp/l19.pdf
  3. GUI learning video (Chinese)- www.bilibili.com/video/av14841464
+ 4. Olli Parviainen\
+    Time and pitch scaling in audio processing\
+    Software Developer's Journal 4/2006
+
