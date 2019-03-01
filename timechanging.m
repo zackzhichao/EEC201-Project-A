@@ -1,6 +1,6 @@
-function ProcessWaveform=timechanging(Filename,changerate)
-%testing
-Filename='test_16k.wav';
+%function ProcessWaveform=timechanging(Filename,changerate)
+function ProcessWaveform=timechanging(changerate)
+Filename='test_forOLA.wav';
 [Waveform,Fs]=audioread(Filename);
 Framelength=round(0.2*Fs);
 Hammingwindow=hamming(0.015*Fs);
@@ -16,7 +16,7 @@ figure(3)
 plot(Waveform)
 figure(4)
 plot(ProcessWaveform)
-audiowrite('ProcessSignal.wav',ProcessWaveform,Fs)
+audiowrite('ProcessSignalforOLA.wav',ProcessWaveform,Fs)
 %sound(Waveform,Fs)
 %sound(ProcessWaveform,changerate*Fs)
 end
