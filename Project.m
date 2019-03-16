@@ -22,7 +22,7 @@ function varargout = Project(varargin)
 
 % Edit the above text to modify the response to help Project
 
-% Last Modified by GUIDE v2.5 05-Mar-2019 23:26:32
+% Last Modified by GUIDE v2.5 13-Mar-2019 17:21:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -151,8 +151,8 @@ sec2 = str2num(get(handles.endsec,'string'));
 t1 = min1*60+sec1;
 t2 = min2*60+sec2;
 f = myGui.freqSam;
-myGui.start = ceil(t1*f);
-myGui.end = ceil(t2*f);
+myGui.start = ceil(t1*f)+1;
+myGui.end = ceil(t2*f)+1;
 t = linspace(t1,t2,(myGui.end-myGui.start+1));
 myGui.datasound1 = myGui.datasound(myGui.start:myGui.end);
 plot(handles.axes2,t,myGui.datasound1);
@@ -166,8 +166,11 @@ function play_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 myGui = guidata(handles.figure1);
+
 myGui.player1=audioplayer(myGui.datasound1,myGui.freqSam);
 play(myGui.player1);
+myGui.flag1 = 1;
+
 guidata(handles.figure1,myGui);
 
 % --------------------------------------------------------------------
@@ -175,10 +178,10 @@ function Pro_Callback(hObject, eventdata, handles)
 % hObject    handle to Pro (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-h1 = [ handles.loadfile handles.play3 handles.axes1];
-h2 = [ handles.play handles.intercept handles.axes2 handles.startmin handles.endmin handles.startsec handles.endsec];
-h3 = [ handles.stretch handles.compress handles.edittime handles.axes3 handles.play1];
-h4 = [ handles.editphase handles.shift handles.play2 handles.axes4];
+h1 = [ handles.loadfile handles.play3 handles.axes1 handles.stop];
+h2 = [ handles.play handles.intercept handles.axes2 handles.startmin handles.endmin handles.startsec handles.endsec handles.save1 handles.stop1];
+h3 = [ handles.stretch handles.compress handles.edittime handles.axes3 handles.play1 handles.save2 handles.stop2];
+h4 = [ handles.editphase handles.shift handles.play2 handles.axes4 handles.save3 handles.stop3];
 set(h1,'Visible','on');
 set(h2,'Visible','on');
 set(h3,'Visible','on');
@@ -197,6 +200,13 @@ function play1_Callback(hObject, eventdata, handles)
 % hObject    handle to play1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+myGui.player2 = audioplayer(myGui.datasound2,myGui.freqSam);
+play(myGui.player2);
+myGui.flag2 = 1;
+
+guidata(handles.figure1,myGui);
 
 
 % --- Executes on button press in play2.
@@ -208,6 +218,7 @@ myGui=guidata(handles.figure1);
 
 myGui.player3=audioplayer(myGui.datasound3,myGui.freqSam);
 play(myGui.player3);
+myGui.flag3 = 1;
 
 guidata(handles.figure1,myGui);
 
@@ -244,11 +255,21 @@ myGui = guidata(handles.figure1);
 Speech = myGui.datasound1;
 Fs = myGui.freqSam;
 Rate = str2num(get(handles.editphase,'string'));
-Speech = Speech(:,1);
+% Speech = Speech(:,1);
+Speech = Speech(:);
 SpeechN1 = Pitchshift(Speech,Rate,Fs);
 myGui.datasound3 = SpeechN1;
-spectrogram(myGui.datasound3);
-plot(handles.axes4,myGui.datasound3);
+
+min1 = str2num(get(handles.startmin,'string'));
+min2 = str2num(get(handles.endmin,'string'));
+sec1 = str2num(get(handles.startsec,'string'));
+sec2 = str2num(get(handles.endsec,'string'));
+t1 = min1*60+sec1;
+t2 = min2*60+sec2;
+
+t = linspace(t1,t2,length(myGui.datasound3));
+plot(handles.axes4,t,myGui.datasound3);
+xlabel(handles.axes4,'t/s');
 
 guidata(handles.figure1,myGui);
 
@@ -280,6 +301,28 @@ function stretch_Callback(hObject, eventdata, handles)
 % hObject    handle to stretch (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myGui = guidata(handles.figure1);
+
+Speech = myGui.datasound1;
+Fs = myGui.freqSam;
+Rate = str2num(get(handles.edittime,'string'));
+% Speech = Speech(:,1);
+Speech = Speech(:);
+SpeechN1 = SOLA(Speech,1/Rate,Fs);
+myGui.datasound2 = SpeechN1;
+
+min1 = str2num(get(handles.startmin,'string'));
+min2 = str2num(get(handles.endmin,'string'));
+sec1 = str2num(get(handles.startsec,'string'));
+sec2 = str2num(get(handles.endsec,'string'));
+t1 = min1*60+sec1;
+t2 = min2*60+sec2;
+
+t = linspace(0,Rate*t2-Rate*t1,length(myGui.datasound2));
+plot(handles.axes3,t,myGui.datasound2);
+xlabel(handles.axes3,'t/s');
+
+guidata(handles.figure1,myGui);
 
 
 % --- Executes on button press in compress.
@@ -287,7 +330,29 @@ function compress_Callback(hObject, eventdata, handles)
 % hObject    handle to compress (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+myGui = guidata(handles.figure1);
 
+Speech = myGui.datasound1;
+Fs = myGui.freqSam;
+Rate = str2num(get(handles.edittime,'string'));
+% Speech = Speech(:,1);
+Speech = Speech(:);
+SpeechN1 = SOLA(Speech,Rate,Fs);
+myGui.datasound2 = SpeechN1;
+
+
+min1 = str2num(get(handles.startmin,'string'));
+min2 = str2num(get(handles.endmin,'string'));
+sec1 = str2num(get(handles.startsec,'string'));
+sec2 = str2num(get(handles.endsec,'string'));
+t1 = min1*60+sec1;
+t2 = min2*60+sec2;
+
+t = linspace(0,t2/Rate-t1/Rate,length(myGui.datasound2));
+plot(handles.axes3,t,myGui.datasound2);
+xlabel(handles.axes3,'t/s');
+
+guidata(handles.figure1,myGui);
 
 % --- Executes on button press in play3.
 function play3_Callback(hObject, eventdata, handles)
@@ -296,11 +361,11 @@ function play3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 myGui=guidata(handles.figure1);
 
-myGui.player=audioplayer(myGui.datasound,myGui.freqSam);
+myGui.player = audioplayer(myGui.datasound,myGui.freqSam);
 play(myGui.player);
+myGui.flag = 1;
 
 guidata(handles.figure1,myGui);
-
 
 
 function startmin_Callback(hObject, eventdata, handles)
@@ -392,3 +457,115 @@ function endmin_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in save1.
+function save1_Callback(hObject, eventdata, handles)
+% hObject    handle to save1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+audiowrite('interception.m4a',myGui.datasound1,myGui.freqSam);
+
+guidata(handles.figure1,myGui);
+
+% --- Executes on button press in save3.
+function save3_Callback(hObject, eventdata, handles)
+% hObject    handle to save3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+audiowrite('*.m4a',myGui.datasound3,myGui.freqSam);
+% uiputfile('*.m4a',myGui.datasound3,myGui.freqSam)
+guidata(handles.figure1,myGui);
+
+
+% --- Executes on button press in save2.
+function save2_Callback(hObject, eventdata, handles)
+% hObject    handle to save2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+audiowrite('timecompress.m4a',myGui.datasound2,myGui.freqSam);
+
+guidata(handles.figure1,myGui);
+
+% --- Executes on button press in stop.
+function stop_Callback(hObject, eventdata, handles)
+% hObject    handle to stop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+if(myGui.flag == 1)
+        disp('1');
+        myGui.flag = 0;
+        pause(myGui.player);
+else
+        disp('0');
+        myGui.flag = 1;
+        resume(myGui.player);
+end
+
+guidata(handles.figure1,myGui);
+
+
+% --- Executes on button press in stop1.
+function stop1_Callback(hObject, eventdata, handles)
+% hObject    handle to stop1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+if(myGui.flag1 == 1)
+        disp('1');
+        myGui.flag1 = 0;
+        pause(myGui.player1);
+else
+        disp('0');
+        myGui.flag1 = 1;
+        resume(myGui.player1);
+end
+
+guidata(handles.figure1,myGui);
+
+% --- Executes on button press in stop3.
+function stop3_Callback(hObject, eventdata, handles)
+% hObject    handle to stop3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+if(myGui.flag3 == 1)
+        disp('1');
+        myGui.flag3 = 0;
+        pause(myGui.player3);
+else
+        disp('0');
+        myGui.flag3 = 1;
+        resume(myGui.player3);
+end
+
+guidata(handles.figure1,myGui);
+
+% --- Executes on button press in stop2.
+function stop2_Callback(hObject, eventdata, handles)
+% hObject    handle to stop2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+myGui=guidata(handles.figure1);
+
+if(myGui.flag2 == 1)
+        disp('1');
+        myGui.flag2 = 0;
+        pause(myGui.player2);
+else
+        disp('0');
+        myGui.flag2 = 1;
+        resume(myGui.player2);
+end
+
+guidata(handles.figure1,myGui);
